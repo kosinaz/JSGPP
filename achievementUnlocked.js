@@ -57,8 +57,25 @@ var Subject = function () {
         observers[i].onNotify(entity, event);
       }
     };
+  return {
+    addObserver: addObserver,
+    removeObserver: removeObserver,
+    notify: notify
+  };
 };
 
 var Physics = function () {
   'use strict';
+  var updateEntity = function (entity) {
+    var wasOnSurface = entity.isOnSurface();
+    entity.accelerate(GRAVITY);
+    entity.update();
+    if (wasOnSurface && !entity.isOnSurface()) {
+      notify(entity, EVENT_START_FALL);
+    }
+  };
+  return {
+    updateEntity: updateEntity
+  };
 };
+Physics.prototype = new Subject();
