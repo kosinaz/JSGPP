@@ -1,4 +1,3 @@
-/*global console*/
 var Unit = function (name, x, y) {
   'use strict';
   var getX = function () {
