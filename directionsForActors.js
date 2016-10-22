@@ -73,37 +73,42 @@ var game = (function () {
       document.getElementById('output').innerHTML = text;
     },
     handleEvent = function (e) {
-      var handle, keyCodes, result;
-      keyCodes = {
-        16: function () {
+      var handle, ids, keyCommands, keys, result;
+      keys = [];
+      ids = ['left', 'up', 'right', 'down', 'fire', 'swap', 'jump'];
+      ids.forEach(function (item) {
+        keys[document.getElementById(item).value] = item;
+      });
+      keyCommands = {
+        'swap': function () {
           result = player.executeCommand('swap');
         },
-        17: function () {
+        'fire': function () {
           result = player.executeCommand('fire');
         },
-        32: function () {
+        'jump': function () {
           result = player.executeCommand('jump', 10, 10);
         },
-        37: function () {
+        'left': function () {
           result = player.executeCommand('lurch', 'left');
         },
-        38: function () {
+        'up': function () {
           result = player.executeCommand('lurch', 'up');
         },
-        39: function () {
+        'right': function () {
           result = player.executeCommand('lurch', 'right');
         },
-        40: function () {
+        'down': function () {
           result = player.executeCommand('lurch', 'down');
         },
         'default': function () {
           result = player.executeCommand();
         }
       };
-      if (keyCodes[e.keyCode]) {
-        handle = keyCodes[e.keyCode];
+      if (keyCommands[keys[e.key]]) {
+        handle = keyCommands[keys[e.key]];
       } else {
-        handle = keyCodes['default'];
+        handle = keyCommands['default'];
       }
       handle();
       log(result + '<br>' + enemy.executeCommand('lurch'));
