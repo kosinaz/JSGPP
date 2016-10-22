@@ -7,13 +7,41 @@
 </head>
 
 <body>
-  <h1><a href = index.html>JavaScript Game Programming Patterns</a></h1>
+  <h1><a href="index.html">JavaScript Game Programming Patterns</a></h1>
   <h2>Command Pattern</h2>
   <h3>Undo and Redo</h3>
-  <div>Controls: arrows</div>
-  <div>Undo: z</div>
-  <div>Redo: y</div>
-  <h4>Commands:</h4>
-  <ol id = "output"> </ol>
+  <form>
+    <div>
+      <input id="left" type="text" maxlength=1 value="a"/>
+      <label for="left">Left</label>
+    </div>
+    <div>
+      <input id="up" type="text" maxlength=1 value="w"/>
+      <label for="up">Up</label>
+    </div>
+    <div>
+      <input id="right" type="text" maxlength=1 value="d"/>
+      <label for="right">Right</label>
+    </div>
+    <div>
+      <input id="down" type="text" maxlength=1 value="s"/>
+      <label for="down">Down</label>
+    </div>
+    <div>
+      <input id="undo" type="text" maxlength=1 value="z"/>
+      <label for="undo">Undo</label>
+    </div>
+    <div>
+      <input id="redo" type="text" maxlength=1 value="y"/>
+      <label for="redo">Redo</label>
+    </div>
+    <div>
+      <input id="unit1" name="unit" type="radio" checked/>
+      <label for="unit1">Unit 1</label>
+      <input id="unit2" name="unit" type="radio"/>
+      <label for="unit2">Unit 2</label>
+    </div>
+  </form>
+  <div id = "output"> </div>
 </body>
 </html>

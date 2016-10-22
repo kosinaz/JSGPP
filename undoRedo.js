@@ -1,37 +1,57 @@
-/*global console*/
 var Unit = function (name, x, y) {
   'use strict';
-  var getX = function () {
+  var log = function (text) {
+    document.getElementById('output').innerHTML =
+      text + '<br>' + document.getElementById('output').innerHTML;
+  };
+  return {
+    getX: function () {
       return x;
     },
-    getY = function () {
+    getY: function () {
       return y;
     },
-    moveTo = function (newX, newY) {
-      x = newX;
-      y = newY;
-    },
-    toString = function () {
-      return name + ' moved to ' + x + ',' + y;
-    };
-  return {
-    getX: getX,
-    getY: getY,
-    moveTo: moveTo,
-    toString: toString
+    moveTo: function (targetX, targetY) {
+      x = targetX || x + Math.floor(Math.random() * 3) - 1;
+      y = targetY || y + Math.floor(Math.random() * 3) - 1;
+      log([name, 'lurched to', x, y].join(' '));
+    }
   };
 };
+
+var CommandList = function () {
+  'use strict';
+  var
+    commands = [],
+    i = -1;
+  return {
+    add: function (commandObject) {
+      i += 1;
+      commands[i] = commandObject;
+      commands[i].execute();
+    },
+    undo: function () {
+      if (commands[i - 1]) {
+        i -= 1;
+        commands[i].undo();
+      }
+    },
+    redo: function () {
+      if (commands[i + 1]) {
+        i += 1;
+        commands[i].execute();
+      }
+    }
+  };
+};
+
 var game = (function () {
   'use strict';
-  var LEFT = 37,
-    UP = 38,
-    RIGHT = 39,
-    DOWN = 40,
-    Y = 89,
-    Z = 90,
-    unit = new Unit('player', 10, 10),
-    commands = [],
-    i = -1,
+  var
+    unit1 = new Unit('Unit 1', 10, 10),
+    unit2 = new Unit('Unit 2', 20, 20),
+    enemy = new Unit('Enemy', 20, 10),
+    commands = new CommandList(),
     makeMoveUnitCommand = function (unit, x, y) {
       var xBefore, yBefore;
       return {
@@ -45,45 +65,50 @@ var game = (function () {
         }
       };
     },
-    handleInput = function (e) {
-      if (e.keyCode === LEFT) {
-        return makeMoveUnitCommand(unit, unit.getX() - 1, unit.getY());
-      } else if (e.keyCode === UP) {
-        return makeMoveUnitCommand(unit, unit.getX(), unit.getY() - 1);
-      } else if (e.keyCode === RIGHT) {
-        return makeMoveUnitCommand(unit, unit.getX() + 1, unit.getY());
-      } else if (e.keyCode === DOWN) {
-        return makeMoveUnitCommand(unit, unit.getX(), unit.getY() + 1);
-      } else if (e.keyCode === Y) {
-        return 'redo';
-      } else if (e.keyCode === Z) {
-        return 'undo';
-      }
-      return null;
-    },
     handleEvent = function (e) {
-      var output = document.getElementById('output'),
-        li = null,
-        command = handleInput(e);
-      if (command === 'undo' && i >= 0) {
-        output.childNodes[i + 1].innerHTML = '<i>' + unit + '</i>';
-        commands[i].undo();
-        i -= 1;
-      } else if (command === 'redo' && i < commands.length - 1) {
-        i += 1;
-        commands[i].execute();
-        output.childNodes[i + 1].innerHTML = unit;
-      } else if (command && command.execute) {
-        command.execute();
-        i += 1;
-        commands[i] = command;
-        commands.length = i + 1;
-        while (output.childElementCount > i) {
-          output.removeChild(output.lastChild);
+      var handle, ids, keyCommands, keys, result, unit;
+      unit = document.getElementById('unit1').checked ? unit1 : unit2;
+      keys = [];
+      ids =
+        ['left', 'up', 'right', 'down', 'undo', 'redo'];
+      ids.forEach(function (item) {
+        keys[document.getElementById(item).value] = item;
+      });
+      keyCommands = {
+        'left': function () {
+          commands.add(makeMoveUnitCommand(unit, unit.getX() - 1, unit.getY()));
+          commands.add(makeMoveUnitCommand(enemy));
+        },
+        'up': function () {
+          commands.add(makeMoveUnitCommand(unit, unit.getX(), unit.getY() - 1));
+          commands.add(makeMoveUnitCommand(enemy));
+        },
+        'right': function () {
+          commands.add(makeMoveUnitCommand(unit, unit.getX() + 1, unit.getY()));
+          commands.add(makeMoveUnitCommand(enemy));
+        },
+        'down': function () {
+          commands.add(makeMoveUnitCommand(unit, unit.getX(), unit.getY() + 1));
+          commands.add(makeMoveUnitCommand(enemy));
+        },
+        'undo': function () {
+          commands.undo();
+          commands.undo();
+        },
+        'redo': function () {
+          commands.redo();
+          commands.redo();
+        },
+        'default': function () {
+          commands.add(makeMoveUnitCommand(enemy));
         }
-        li = output.appendChild(document.createElement('li'));
-        li.innerHTML = unit;
+      };
+      if (keyCommands[keys[e.key]]) {
+        handle = keyCommands[keys[e.key]];
+      } else {
+        handle = keyCommands['default'];
       }
+      handle();
     };
   window.addEventListener('keydown', handleEvent);
 }());
