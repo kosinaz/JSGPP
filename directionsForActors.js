@@ -67,13 +67,15 @@ var Unit = function (name, x, y) {
 var game = (function () {
   'use strict';
   var
-    player = new Unit('Player', 10, 10, 10),
-    enemy = new Unit('Enemy', 20, 10, 5),
+    unit1 = new Unit('Unit 1', 10, 10),
+    unit2 = new Unit('Unit 2', 20, 20),
+    enemy = new Unit('Enemy', 20, 10),
     log = function (text) {
       document.getElementById('output').innerHTML = text;
     },
     handleEvent = function (e) {
-      var handle, ids, keyCommands, keys, result;
+      var handle, ids, keyCommands, keys, result, selectedUnit;
+      selectedUnit = document.getElementById('unit1').checked ? unit1 : unit2;
       keys = [];
       ids = ['left', 'up', 'right', 'down', 'fire', 'swap', 'jump'];
       ids.forEach(function (item) {
@@ -81,28 +83,28 @@ var game = (function () {
       });
       keyCommands = {
         'swap': function () {
-          result = player.executeCommand('swap');
+          result = selectedUnit.executeCommand('swap');
         },
         'fire': function () {
-          result = player.executeCommand('fire');
+          result = selectedUnit.executeCommand('fire');
         },
         'jump': function () {
-          result = player.executeCommand('jump', 10, 10);
+          result = selectedUnit.executeCommand('jump', 10, 10);
         },
         'left': function () {
-          result = player.executeCommand('lurch', 'left');
+          result = selectedUnit.executeCommand('lurch', 'left');
         },
         'up': function () {
-          result = player.executeCommand('lurch', 'up');
+          result = selectedUnit.executeCommand('lurch', 'up');
         },
         'right': function () {
-          result = player.executeCommand('lurch', 'right');
+          result = selectedUnit.executeCommand('lurch', 'right');
         },
         'down': function () {
-          result = player.executeCommand('lurch', 'down');
+          result = selectedUnit.executeCommand('lurch', 'down');
         },
         'default': function () {
-          result = player.executeCommand();
+          result = selectedUnit.executeCommand();
         }
       };
       if (keyCommands[keys[e.key]]) {
