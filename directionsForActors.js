@@ -111,7 +111,7 @@ var game = (function () {
         handle = keyCommands['default'];
       }
       handle();
-      log(result + '<br>' + enemy.executeCommand('lurch'));
+      log(result + ' ' + enemy.executeCommand('lurch'));
     };
   window.addEventListener('keydown', handleEvent);
 }());
