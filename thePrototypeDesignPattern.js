@@ -1,26 +1,30 @@
-var Spawner = function (Monster) {
+var Ghost = function (health, speed) {
   'use strict';
-  var spawnMonster = function () {
-    return new Monster(15, 3);
-  };
   return {
-    spawnMonster: spawnMonster
+    toString: function () {
+      return 'Ghost(' + health + ',' + speed + ') ';
+    },
+    clone: function () {
+      return new Ghost(health, speed);
+    }
   };
 };
 
-var Ghost = function (health, speed) {
+var Spawner = function (monsterPrototype) {
   'use strict';
-  var toString = function () {
-    return 'Ghost(' + health + ',' + speed + ') ';
-  };
   return {
-    toString: toString
+    spawnMonster: function () {
+      return monsterPrototype.clone();
+    }
   };
 };
 
 window.addEventListener('load', function () {
   'use strict';
-  var ghostSpawner = new Spawner(Ghost), i;
+  var
+    ghostPrototype = new Ghost(15, 3),
+    ghostSpawner = new Spawner(ghostPrototype),
+    i;
   for (i = 0; i < 5; i += 1) {
     document.getElementById('output').innerHTML += ghostSpawner.spawnMonster();
   }
